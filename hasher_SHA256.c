@@ -13,7 +13,7 @@
 #define ORANGE "\033[0;33m"
 #define RED "\x1B[31m"
 #define NO_COLOR "\033[0m"
-
+#define GREEN "\x1B[32m"
 
 /* ----------- SHA-256 ----------- */
 
@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
 	sha256((unsigned char *)argv[1], strlen(argv[1]), hash);
 	
 	// Mostrar hash
+	printf(GREEN "[OK] " NO_COLOR);
 	printf(ORANGE "[SHA-256]: " NO_COLOR);
 
 	for(int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
@@ -49,4 +50,3 @@ int main(int argc, char *argv[]) {
 	return 0;
     
 }
-
