@@ -8,16 +8,17 @@
 #include <openssl/sha.h>
 #include <time.h>
 
-#define ORANGE "\033[0;33m"
 #define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
 #define NO_COLOR "\033[0m"
+#define BLUE "\x1B[34m"
 
 #define MAX_PASSWORD_LENGTH 6 // Longitud máxima de la contraseña
-// #define CHAR_SET_LENGTH 26    // Longitud del conjunto de caracteres del abecedario reducido 
-#define CHAR_SET_LENGTH 62    // Longitud del conjunto de caracteres del abecedario mayusculas, minusculas y numeros 
+#define CHAR_SET_LENGTH 26    // Longitud del conjunto de caracteres del abecedario reducido 
+//#define CHAR_SET_LENGTH 62    // Longitud del conjunto de caracteres del abecedario mayusculas, minusculas y numeros 
 
-char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // Conjunto de caracteres posibles
-// char charset[] = "abcdefghijklmnopqrstuvwxyz"; // Conjunto de caracteres posibles
+//char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; // Conjunto de caracteres posibles
+char charset[] = "abcdefghijklmnopqrstuvwxyz"; // Conjunto de caracteres posibles
 
 int encontrado = 0;
 int newencontrado = 0;
@@ -53,7 +54,6 @@ unsigned long long calcularCombinaciones(int longitud) {
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
     
-    
     MPI_Status status;
 
     int rank, size;
@@ -82,9 +82,15 @@ int main(int argc, char *argv[]) {
     unsigned char hash[SHA256_DIGEST_LENGTH];
 
     int total_passwords = calcularCombinaciones(MAX_PASSWORD_LENGTH);
-
+    
     if (rank == 0) {
-        printf("Existen un total de %d posibles contraseñas \n", total_passwords);
+        printf(BLUE "[INFO] " NO_COLOR);
+        printf("SHA-256 hash: %s \n", hash_objetivo);
+        
+        printf(BLUE "[INFO] " NO_COLOR);
+        printf("Possible passwords combinations: %i \n", total_passwords);
+	
+        printf("Cracking password...\n");
     }
 
     // Calcular el rango de contraseñas para cada proceso
@@ -119,11 +125,13 @@ int main(int argc, char *argv[]) {
 
                 end = clock();
                 double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
-                printf(ORANGE "[PASSWORD]: " NO_COLOR);
-                printf("%s\n", local_password);
-                printf("Time taken: %f \n", time_taken);
+                printf(GREEN "[OK]" NO_COLOR);
+                printf("Password: %s\n", local_password);
+                
+                printf(BLUE "[INFO] " NO_COLOR);
+                printf("Time taken: %f \n\n\n", time_taken);
 				
-				freopen("/dev/null", "w", stderr);
+		freopen("/dev/null", "w", stderr); // No devolver nada
                 MPI_Abort(MPI_COMM_WORLD, 0); // Parar todos los procesos
 
                 
