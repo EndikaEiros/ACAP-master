@@ -1,5 +1,4 @@
-// gcc test.c -o test -lcrypto -fopenmp
-// ./test
+// gcc cracker_omp.c -o cracker_omp -lcrypto -fopenmp
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,9 +7,10 @@
 #include <time.h>
 #include <omp.h>
 
-#define ORANGE "\033[0;33m"
 #define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
 #define NO_COLOR "\033[0m"
+#define BLUE "\x1B[34m"
 
 #define MAX_PASSWORD_LENGTH 6
 #define CHAR_SET_LENGTH 26
@@ -44,6 +44,12 @@ char* number_to_sequence(int number, char* sequence) {
 }
 
 int main(int argc, char **argv) {
+
+    clock_t start, end;
+    double cpu_time_used;
+	
+    start = clock();
+
     if (argc != 2) {
         fprintf(stderr, RED "[ERROR]" NO_COLOR " Usage: %s <hash>\n", argv[0]);
         return 1;
@@ -51,12 +57,30 @@ int main(int argc, char **argv) {
 
     int total_passwords = calcularCombinaciones(MAX_PASSWORD_LENGTH);
     volatile int encontrado = 0;
+    
+    char *hash_objetivo = argv[1];
+        
+    printf(BLUE "[INFO] " NO_COLOR);
+    printf("SHA-256 hash: %s \n", hash_objetivo);
+        
+    printf(BLUE "[INFO] " NO_COLOR);
+    printf("Possible passwords combinations: %i \n", total_passwords);
+	
+    printf("Cracking password...\n");
 
     #pragma omp parallel shared(encontrado)
     {
         char local_password[MAX_PASSWORD_LENGTH + 1] = {0};
         char hash_candidato[2 * SHA256_DIGEST_LENGTH + 1];
         unsigned char hash[SHA256_DIGEST_LENGTH];
+        
+        //printf(BLUE "[INFO] " NO_COLOR);
+        //printf("SHA-256 hash: %s \n", hash_objetivo);
+        
+        //printf(BLUE "[INFO] " NO_COLOR);
+        //printf("Possible passwords combinations: %i \n", total_passwords);
+	
+        //printf("Cracking password...\n");
 
         #pragma omp for nowait
         for (int idx = 1; idx <= total_passwords; idx++) {
@@ -68,12 +92,20 @@ int main(int argc, char **argv) {
                 sprintf(&hash_candidato[i * 2], "%02x", hash[i]);
             }
 
-            if (strcmp(argv[1], hash_candidato) == 0) {
+            if (strcmp(hash_objetivo, hash_candidato) == 0) {
                 #pragma omp critical
                 {
                     if (!encontrado) {  // Check again within the critical section
+                    
+                        end = clock();
+                        double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+                    
                         encontrado = 1;
-                        printf(ORANGE "[PASSWORD]: " NO_COLOR "%s\n", local_password);
+                        printf(GREEN "[OK]: " NO_COLOR);
+			printf("Password: %s\n", local_password);
+				
+			printf(BLUE "[INFO] " NO_COLOR);
+			printf("Time taken: %f \n", time_taken/16);
                     }
                 }
             }
