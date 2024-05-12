@@ -12,9 +12,11 @@
 #include <openssl/sha.h>
 #include <time.h>
 
-#define ORANGE "\033[0;33m"
 #define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
 #define NO_COLOR "\033[0m"
+#define BLUE "\x1B[34m"
+
 
 #define MAX_PASSWORD_LENGTH 6 // Longitud máxima de la contraseña
 #define CHAR_SET_LENGTH 26 // Longitud del conjunto de caracteres
@@ -71,17 +73,23 @@ int main(int argc, char *argv[]) {
 		printf(" Usage: %s <cadena>\n", argv[0]);
 		return 1;
 	}
-
+	
 	int total_passwords = calcularCombinaciones(MAX_PASSWORD_LENGTH);
-
-	printf("%i \n", total_passwords);
+	
+        char *hash_objetivo = argv[1];
+	unsigned char hash_candidato[SHA256_DIGEST_LENGTH];
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+        
+        printf(BLUE "[INFO] " NO_COLOR);
+        printf("SHA-256 hash: %s \n", hash_objetivo);
+        
+        printf(BLUE "[INFO] " NO_COLOR);
+        printf("Possible passwords combinations: %i \n", total_passwords);
+	
+        printf("Cracking password...\n");
 
 	char password[MAX_PASSWORD_LENGTH + 1]; 
  	int length;
-
-	char *hash_objetivo = argv[1];
-	unsigned char hash_candidato[SHA256_DIGEST_LENGTH];
-	unsigned char hash[SHA256_DIGEST_LENGTH];
 
  	for (int idx = 0; idx <= total_passwords; idx++) {
 		char *local_password = number_to_sequence(idx);
@@ -98,13 +106,16 @@ int main(int argc, char *argv[]) {
 				end = clock();
 				encontrado = 1;
 				double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
-				printf(ORANGE "[PASSWORD]: " NO_COLOR);
-				printf("%s\n", local_password);
+				
+				printf(GREEN "[OK]: " NO_COLOR);
+				printf("Password: %s\n", local_password);
+				
+				printf(BLUE "[INFO] " NO_COLOR);
 				printf("Time taken: %f \n", time_taken);
+				
 				break;
 			}
 		}
 	}
 	return 0;
 }
-
