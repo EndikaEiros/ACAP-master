@@ -1,5 +1,12 @@
+/* --------- Compilation --------- */
+
 // mpicc -o cracker_mpi cracker_mpi.c -lcrypto
+
+/* ---------- Execution ---------- */
+
 // mpirun -np 8 ./cracker_mpi 283c49894a43c19acffae9055811b469f342cc1aaab9f2adc30febf354fd463d
+
+/* ---------- Includes ----------- */
 
 #include <mpi.h>
 #include <stdio.h>
@@ -7,6 +14,8 @@
 #include <string.h>
 #include <openssl/sha.h>
 #include <time.h>
+
+/* ----------- Defines ----------- */
 
 #define RED "\x1B[31m"
 #define GREEN "\x1B[32m"
@@ -22,6 +31,8 @@ char charset[] = "abcdefghijklmnopqrstuvwxyz"; // Conjunto de caracteres posible
 
 int encontrado = 0;
 int newencontrado = 0;
+
+/* ---------- Functions ---------- */
 
 char* number_to_sequence(int number) {
     static char sequence[6] = {0}; // static array to store the resulting sequence
@@ -50,6 +61,8 @@ unsigned long long calcularCombinaciones(int longitud) {
     }
     return combinaciones;
 }
+
+/* ------------ Main ------------- */
 
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
@@ -124,7 +137,6 @@ int main(int argc, char *argv[]) {
 		freopen("/dev/null", "w", stderr); // No devolver nada
                 MPI_Abort(MPI_COMM_WORLD, 0); // Parar todos los procesos
 
-                
             }
 
         }else{
