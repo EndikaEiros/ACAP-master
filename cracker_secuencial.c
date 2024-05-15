@@ -2,9 +2,11 @@
 
 // gcc cracker_secuencial.c -o cracker_secuencial -lcrypto
 
+/* ---------- Execution ---------- */
+
+// time ./cracker_secuencial 283c49894a43c19acffae9055811b469f342cc1aaab9f2adc30febf354fd463d
 
 /* ---------- Includes ----------- */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,11 +21,11 @@
 
 
 #define MAX_PASSWORD_LENGTH 6 // Longitud máxima de la contraseña
-#define CHAR_SET_LENGTH 26 // Longitud del conjunto de caracteres
+#define CHAR_SET_LENGTH 36 // Longitud del conjunto de caracteres
 
 /* ----------- SHA-256 ----------- */
 
-char charset[] = "abcdefghijklmnopqrstuvwxyz";
+char charset[] = "abcdefghijklmnopqrstuvwxyz0123456789";
 int charset_index(char c);
 int generate_next_password(char *password, int length);
 
@@ -69,9 +71,9 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 	
-	int total_passwords = calcularCombinaciones(MAX_PASSWORD_LENGTH);
+	unsigned long long total_passwords = calcularCombinaciones(MAX_PASSWORD_LENGTH);
 	
-        char *hash_objetivo = argv[1];
+    char *hash_objetivo = argv[1];
 	unsigned char hash_candidato[SHA256_DIGEST_LENGTH];
 	unsigned char hash[SHA256_DIGEST_LENGTH];
         
@@ -79,7 +81,7 @@ int main(int argc, char *argv[]) {
         printf("SHA-256 hash: %s \n", hash_objetivo);
         
         printf(BLUE "[INFO] " NO_COLOR);
-        printf("Possible passwords combinations: %i \n", total_passwords);
+        printf("Possible passwords combinations: %lli \n", total_passwords);
 	
         printf("Cracking password...\n");
 
@@ -100,7 +102,6 @@ int main(int argc, char *argv[]) {
         	if (strcmp(hash_objetivo, hash_candidato) == 0) {
 
 				encontrado = 1;
-				double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
 				
 				printf(GREEN "[OK]: " NO_COLOR);
 				printf("Password: %s\n", local_password);
