@@ -1,4 +1,8 @@
+/* --------- Compilation --------- */
+
 // gcc cracker_omp.c -o cracker_omp -lcrypto -fopenmp
+
+/* ---------- Includes ----------- */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +10,8 @@
 #include <openssl/sha.h>
 #include <time.h>
 #include <omp.h>
+
+/* ---------- Defines ------------ */
 
 #define RED "\x1B[31m"
 #define GREEN "\x1B[32m"
@@ -16,6 +22,8 @@
 #define CHAR_SET_LENGTH 26
 
 char charset[] = "abcdefghijklmnopqrstuvwxyz";
+
+/* ---------- Functions ---------- */
 
 unsigned long long potencia(int base, int exponente) {
     unsigned long long resultado = 1;
@@ -42,6 +50,8 @@ char* number_to_sequence(int number, char* sequence) {
     sequence[index] = '\0'; // Null-terminate the sequence
     return sequence;
 }
+
+/* ------------ Main ------------- */
 
 int main(int argc, char **argv) {
 
@@ -71,7 +81,7 @@ int main(int argc, char **argv) {
 
         #pragma omp for nowait
         for (int idx = 1; idx <= total_passwords; idx++) {
-            if (encontrado) continue; // Skip loop iteration if password is found
+            if (encontrado) continue;
 
             number_to_sequence(idx, local_password);
             SHA256((unsigned char*)local_password, strlen(local_password), hash);
@@ -82,9 +92,8 @@ int main(int argc, char **argv) {
             if (strcmp(hash_objetivo, hash_candidato) == 0) {
                 #pragma omp critical
                 {
-                    if (!encontrado) {  // Check again within the critical section
+                    if (!encontrado) {
                     
-                        end = clock();
                         double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
                     
                         encontrado = 1;
