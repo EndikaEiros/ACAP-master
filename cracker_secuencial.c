@@ -61,11 +61,6 @@ unsigned long long calcularCombinaciones(int longitud) {
 /* -------- Main function -------- */
 
 int main(int argc, char *argv[]) {
-
-	clock_t start, end;
-	double cpu_time_used;
-	
-	start = clock();
 	
 	if (argc != 2) {
 	
@@ -103,15 +98,12 @@ int main(int argc, char *argv[]) {
         	}
             
         	if (strcmp(hash_objetivo, hash_candidato) == 0) {
-				end = clock();
+
 				encontrado = 1;
 				double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
 				
 				printf(GREEN "[OK]: " NO_COLOR);
 				printf("Password: %s\n", local_password);
-				
-				printf(BLUE "[INFO] " NO_COLOR);
-				printf("Time taken: %f \n", time_taken);
 				
 				break;
 			}
