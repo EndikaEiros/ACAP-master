@@ -18,7 +18,6 @@ run_command() {
     local n=$2
     printf "\n--------------------\n" >> mpi.txt 2>&1
     printf "\nHASH: $hash - np: $n\n" >> mpi.txt 2>&1
-    #mpirun -np $n ./cracker_mpi $hash >> mpi.txt 2>&1
     { time mpirun -np $n ./cracker_mpi $hash; } >> mpi.txt 2>&1
 }
 
