@@ -1,5 +1,5 @@
-// mpicc -o crack_mpi crack_mpi.c -lcrypto
-// mpirun -np 8 ./crack_mpi 283c49894a43c19acffae9055811b469f342cc1aaab9f2adc30febf354fd463d
+// mpicc -o cracker_mpi cracker_mpi.c -lcrypto
+// mpirun -np 8 ./cracker_mpi 283c49894a43c19acffae9055811b469f342cc1aaab9f2adc30febf354fd463d
 
 #include <mpi.h>
 #include <stdio.h>
