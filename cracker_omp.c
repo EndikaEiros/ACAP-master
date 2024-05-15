@@ -2,6 +2,10 @@
 
 // gcc cracker_omp.c -o cracker_omp -lcrypto -fopenmp
 
+/* ---------- Execution ---------- */
+
+// time ./cracker_omp 283c49894a43c19acffae9055811b469f342cc1aaab9f2adc30febf354fd463d
+
 /* ---------- Includes ----------- */
 
 #include <stdio.h>
@@ -19,9 +23,9 @@
 #define BLUE "\x1B[34m"
 
 #define MAX_PASSWORD_LENGTH 6
-#define CHAR_SET_LENGTH 26
+#define CHAR_SET_LENGTH 36
 
-char charset[] = "abcdefghijklmnopqrstuvwxyz";
+char charset[] = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 /* ---------- Functions ---------- */
 
@@ -60,7 +64,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    int total_passwords = calcularCombinaciones(MAX_PASSWORD_LENGTH);
+    unsigned long long total_passwords = calcularCombinaciones(MAX_PASSWORD_LENGTH);
     volatile int encontrado = 0;
     
     char *hash_objetivo = argv[1];
@@ -69,7 +73,7 @@ int main(int argc, char **argv) {
     printf("SHA-256 hash: %s \n", hash_objetivo);
         
     printf(BLUE "[INFO] " NO_COLOR);
-    printf("Possible passwords combinations: %i \n", total_passwords);
+    printf("Possible passwords combinations: %lli \n", total_passwords);
 	
     printf("Cracking password...\n");
 
@@ -80,7 +84,7 @@ int main(int argc, char **argv) {
         unsigned char hash[SHA256_DIGEST_LENGTH];
 
         #pragma omp for nowait
-        for (int idx = 1; idx <= total_passwords; idx++) {
+        for (int long long idx = 1; idx <= total_passwords; idx++) {
             if (encontrado) continue;
 
             number_to_sequence(idx, local_password);
