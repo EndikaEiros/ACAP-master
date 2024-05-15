@@ -45,11 +45,6 @@ char* number_to_sequence(int number, char* sequence) {
 
 int main(int argc, char **argv) {
 
-    clock_t start, end;
-    double cpu_time_used;
-	
-    start = clock();
-
     if (argc != 2) {
         fprintf(stderr, RED "[ERROR]" NO_COLOR " Usage: %s <hash>\n", argv[0]);
         return 1;
@@ -73,14 +68,6 @@ int main(int argc, char **argv) {
         char local_password[MAX_PASSWORD_LENGTH + 1] = {0};
         char hash_candidato[2 * SHA256_DIGEST_LENGTH + 1];
         unsigned char hash[SHA256_DIGEST_LENGTH];
-        
-        //printf(BLUE "[INFO] " NO_COLOR);
-        //printf("SHA-256 hash: %s \n", hash_objetivo);
-        
-        //printf(BLUE "[INFO] " NO_COLOR);
-        //printf("Possible passwords combinations: %i \n", total_passwords);
-	
-        //printf("Cracking password...\n");
 
         #pragma omp for nowait
         for (int idx = 1; idx <= total_passwords; idx++) {
@@ -104,8 +91,6 @@ int main(int argc, char **argv) {
                         printf(GREEN "[OK]: " NO_COLOR);
 			printf("Password: %s\n", local_password);
 				
-			printf(BLUE "[INFO] " NO_COLOR);
-			printf("Time taken: %f \n", time_taken/16);
                     }
                 }
             }
