@@ -60,11 +60,6 @@ int main(int argc, char *argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    clock_t start, end;
-    double cpu_time_used;
-
-    start = clock();
-
     if (argc != 2) {
         if (rank == 0) {
             printf(RED "[ERROR]" NO_COLOR);
@@ -123,13 +118,8 @@ int main(int argc, char *argv[]) {
                 newencontrado = 1;
                 MPI_Bcast(&newencontrado, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-                end = clock();
-                double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
                 printf(GREEN "[OK]" NO_COLOR);
                 printf("Password: %s\n", local_password);
-                
-                printf(BLUE "[INFO] " NO_COLOR);
-                printf("Time taken: %f \n\n\n", time_taken);
 				
 		freopen("/dev/null", "w", stderr); // No devolver nada
                 MPI_Abort(MPI_COMM_WORLD, 0); // Parar todos los procesos
