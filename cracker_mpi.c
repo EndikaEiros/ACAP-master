@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
     if (argc != 2) {
         if (rank == 0) {
             printf(RED "[ERROR]" NO_COLOR);
-            printf(" Usage: %s <cadena>\n", argv[0]);
+            printf(" Usage: mpirun -np 8 %s <cadena>\n", argv[0]);
         }
         MPI_Finalize();
         return 1;
