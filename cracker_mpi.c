@@ -23,6 +23,8 @@
 
 #define MAX_PASSWORD_LENGTH 6 // Longitud máxima de la contraseña
 #define CHAR_SET_LENGTH 36 // Longitud del conjunto de caracteres
+#define HASH_STR_LENGTH (SHA256_DIGEST_LENGTH * 2 + 1) // Longitud máxima del hash en formato hexadecimal más el nulo
+
 
 /* ---------- Functions ---------- */
 
@@ -84,7 +86,7 @@ int main(int argc, char *argv[]) {
     unsigned long long passwords_per_process = total_passwords / size;
 
     char password[MAX_PASSWORD_LENGTH + 1];
-    unsigned char hash_candidato[SHA256_DIGEST_LENGTH];
+    unsigned char hash_candidato[HASH_STR_LENGTH];
     unsigned char hash[SHA256_DIGEST_LENGTH];
     
     if (rank == 0) {
@@ -107,8 +109,11 @@ int main(int argc, char *argv[]) {
             for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
                 sprintf(&hash_candidato[i * 2], "%02x", hash[i]);
             }
+            
+            hash_candidato[HASH_STR_LENGTH - 1] = '\0';
 
-            if (strcmp(hash_objetivo, hash_candidato) == 0) {
+            if (strncmp(hash_objetivo, hash_candidato, SHA256_DIGEST_LENGTH * 2) == 0) {
+
 
                 found = 1;
                 
